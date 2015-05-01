@@ -1,30 +1,41 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var _ = require('underscore');
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
-var userNames = [];
+var waitingUsers = [];
+
+function UsernameSocket(rString, socket) {
+  this.rString = rString;
+  this.socket = socket;
+}
 
 io.on('connection', function(socket){
-  var currentName = "";
-  userNames.forEach(function(name) {
-    socket.emit('name-added', name);
-  });
-  console.log('a user connected');
+  var currentRandomString = "";
+  console.log('user connected');
   socket.on('disconnect', function(){
-    userNames.splice(userNames.indexOf(currentName), 1);
-    io.emit('name-removed', currentName);
+    waitingUsers.splice(waitingUsers.indexOf(_.find(waitingUsers, function(usernameSocket) {
+      return usernameSocket.rString === currentRandomString;
+    })), 1);
     console.log('user disconnected');
   });
 
-  socket.on('name-added', function(newName){
-    console.log(newName);
-    currentName = newName;
-    userNames.push(newName);
-    io.emit('name-added', newName);
+  socket.on('waiting', function(rString) {
+    currentRandomString = rString;
+    if (waitingUsers.length > 1) {
+      waitingUsers = _.reject(waitingUsers, function(e) {
+        return e.rString === currentRandomString;
+      });
+      var otherUser = waitingUsers.splice(_.random(0, waitingUsers.length - 1), 1)[0];
+      this.emit('new-connection', currentRandomString);
+      otherUser.socket.emit('new-connection', currentRandomString);
+    } else {
+      waitingUsers.push(new UsernameSocket(currentRandomString, this));
+    }
   });
 });
 

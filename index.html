@@ -7,10 +7,7 @@
     <video id="local-video"></video>
     <div id="remote-videos"></div>
 
-    <ul id="users"></ul>
-    <form action="">
-      <input id="name" autocomplete="off" /><button>Join</button>
-    </form>
+    <button class="random">Random</button>
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
@@ -28,26 +25,23 @@
         });
       }
 
+      function randomString(length, chars) {
+        var result = '';
+        for (var i = length; i > 0; --i) {
+          result += chars[Math.round(Math.random() * (chars.length - 1))];
+        }
+        return result;
+      }
+
       var socket = io();
-      $('form').submit(function(){
-        socket.emit('name-added', $('#name').val());
-        $('#name').val('');
-        return false;
-      });
-      socket.on('name-added', function(newName){
-        var element = $('<li>').text(newName);
-        element.on("click", function(e) {
-          createNewChannelFor(newName);
-        });
-        $('#users').append(element);
+
+      $(".random").on('click', function () {
+        var rString = randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        socket.emit("waiting", rString);
       });
 
-      socket.on('name-removed', function(currentName) {
-        $('#users > li').each(function(_, el) {
-          if ($(el).text() === currentName) {
-            $(el).remove();
-          }
-        });
+      socket.on('new-connection', function(channel) {
+        createNewChannelFor(channel);
       });
     </script>
   </body>
