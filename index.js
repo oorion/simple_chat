@@ -9,9 +9,9 @@ app.get('/', function(req, res){
 
 var waitingUsers = [];
 
-function UsernameSocket(rString, socketId) {
+function UsernameSocket(rString, socket) {
   this.rString = rString;
-  this.socketId = socketId;
+  this.socket = socket;
 }
 
 io.on('connection', function(socket){
@@ -34,7 +34,7 @@ io.on('connection', function(socket){
       this.emit('new-connection', currentRandomString);
       otherUser.socket.emit('new-connection', currentRandomString);
     } else {
-      waitingUsers.push(new UsernameSocket(currentRandomString, this.id));
+      waitingUsers.push(new UsernameSocket(currentRandomString, this));
       console.log("waitingUsers: ");
       console.log(waitingUsers);
     }
