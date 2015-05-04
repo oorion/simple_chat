@@ -47,10 +47,6 @@
       socket.on('new-connection', function(channel) {
         createNewChannelFor(channel);
       });
-
-      $('.next').on('click', function () {
-        socket.emit('next', generateRandomString());
-      });
     </script>
   </body>
 </html>

@@ -26,6 +26,14 @@ io.on('connection', function(socket){
 
   socket.on('waiting', function(rString) {
     currentRandomString = rString;
+
+    var existsOnWaitingUsers = _.find(waitingUsers, function(e) {
+      return e.socket.id == socket.id;
+    });
+
+    if (!existsOnWaitingUsers) {
+      waitingUsers.push(new UsernameSocket(currentRandomString, this));
+    }
     if (waitingUsers.length > 1) {
       waitingUsers = _.reject(waitingUsers, function(e) {
         return e.rString === currentRandomString;
@@ -33,22 +41,12 @@ io.on('connection', function(socket){
       var otherUser = waitingUsers.splice(_.random(0, waitingUsers.length - 1), 1)[0];
       this.emit('new-connection', currentRandomString);
       otherUser.socket.emit('new-connection', currentRandomString);
-    } else {
-      waitingUsers.push(new UsernameSocket(currentRandomString, this));
-      console.log("waitingUsers: ");
-      console.log(waitingUsers);
     }
-  });
 
-  socket.on('next', function(rString) {
-    console.log("after next is clicked: ");
-    console.log(socket.id);
-
-    //pseudo code:
-    //add the new UsernameSocket object on the waitingUsers array?
-    //do the same work that I did in the waiting event above (possibly pull it out to a function)
+    console.log('waitingUsers: ');
+    console.log(waitingUsers);
   });
-});
+);
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
