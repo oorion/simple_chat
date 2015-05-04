@@ -9,9 +9,9 @@ app.get('/', function(req, res){
 
 var waitingUsers = [];
 
-function UsernameSocket(rString, socket) {
+function UsernameSocket(rString, socketId) {
   this.rString = rString;
-  this.socket = socket;
+  this.socketId = socketId;
 }
 
 io.on('connection', function(socket){
@@ -34,8 +34,19 @@ io.on('connection', function(socket){
       this.emit('new-connection', currentRandomString);
       otherUser.socket.emit('new-connection', currentRandomString);
     } else {
-      waitingUsers.push(new UsernameSocket(currentRandomString, this));
+      waitingUsers.push(new UsernameSocket(currentRandomString, this.id));
+      console.log("waitingUsers: ");
+      console.log(waitingUsers);
     }
+  });
+
+  socket.on('next', function(rString) {
+    console.log("after next is clicked: ");
+    console.log(socket.id);
+
+    //pseudo code:
+    //add the new UsernameSocket object on the waitingUsers array?
+    //do the same work that I did in the waiting event above (possibly pull it out to a function)
   });
 });
 

@@ -8,6 +8,7 @@
     <div id="remote-videos"></div>
 
     <button class="random">Random</button>
+    <button class="next">Next</button>
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
@@ -33,15 +34,22 @@
         return result;
       }
 
+      function generateRandomString() {
+        return randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+      }
+
       var socket = io();
 
-      $(".random").on('click', function () {
-        var rString = randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
-        socket.emit("waiting", rString);
+      $('.random').on('click', function () {
+        socket.emit('waiting', generateRandomString());
       });
 
       socket.on('new-connection', function(channel) {
         createNewChannelFor(channel);
+      });
+
+      $('.next').on('click', function () {
+        socket.emit('next', generateRandomString());
       });
     </script>
   </body>
