@@ -16,12 +16,11 @@ function UsernameSocket(rString, socket) {
 
 io.on('connection', function(socket){
   var currentRandomString = "";
-  console.log('user connected');
+
   socket.on('disconnect', function(){
     waitingUsers.splice(waitingUsers.indexOf(_.find(waitingUsers, function(usernameSocket) {
       return usernameSocket.rString === currentRandomString;
     })), 1);
-    console.log('user disconnected');
   });
 
   socket.on('waiting', function(rString) {
@@ -34,6 +33,7 @@ io.on('connection', function(socket){
     if (!existsOnWaitingUsers) {
       waitingUsers.push(new UsernameSocket(currentRandomString, this));
     }
+
     if (waitingUsers.length > 1) {
       waitingUsers = _.reject(waitingUsers, function(e) {
         return e.rString === currentRandomString;
@@ -42,9 +42,6 @@ io.on('connection', function(socket){
       this.emit('new-connection', currentRandomString);
       otherUser.socket.emit('new-connection', currentRandomString);
     }
-
-    console.log('waitingUsers: ');
-    console.log(waitingUsers);
   });
 });
 
