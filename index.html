@@ -40,10 +40,12 @@
       var socket = io();
 
       $('.random').on('click', function () {
+        $('#remote-videos').html('');
         socket.emit('waiting', generateRandomString());
       });
 
       socket.on('new-connection', function(channel) {
+        currentChannel = channel;
         createNewChannelFor(channel);
       });
     </script>

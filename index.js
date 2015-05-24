@@ -2,49 +2,45 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var _ = require('underscore');
+var UserPipeline = require('./user_pipeline');
+var User = require('./user');
+
+var userPipeline = new UserPipeline;
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
-var waitingUsers = [];
-
-function UsernameSocket(rString, socket) {
-  this.rString = rString;
-  this.socket = socket;
-}
-
 io.on('connection', function(socket){
-  var currentRandomString = "";
+  var user = new User("", socket);
+  userPipeline.addUser(user);
+
+  socket.on('waiting', function(randomString) {
+    user.randomString = randomString;
+
+    if (userPipeline.length() > 1) {
+      var randomUser = userPipeline.selectRandomUser(user);
+
+      //emit new-connection to both users
+      user.socket.emit('new-connection', user.randomString);
+      randomUser.socket.emit('new-connection', user.randomString);
+    }
+
+    console.log('waitingUsers channels: ');
+    console.log(_.map(userPipeline.waitingUsers, function(user) {
+      return user.randomString;
+    }));
+  });
 
   socket.on('disconnect', function(){
-    waitingUsers.splice(waitingUsers.indexOf(_.find(waitingUsers, function(usernameSocket) {
-      return usernameSocket.rString === currentRandomString;
-    })), 1);
-  });
-
-  socket.on('waiting', function(rString) {
-    currentRandomString = rString;
-
-    var existsOnWaitingUsers = _.find(waitingUsers, function(e) {
-      return e.socket.id == socket.id;
-    });
-
-    if (!existsOnWaitingUsers) {
-      waitingUsers.push(new UsernameSocket(currentRandomString, this));
-    }
-
-    if (waitingUsers.length > 1) {
-      waitingUsers = _.reject(waitingUsers, function(e) {
-        return e.rString === currentRandomString;
-      });
-      var otherUser = waitingUsers.splice(_.random(0, waitingUsers.length - 1), 1)[0];
-      this.emit('new-connection', currentRandomString);
-      otherUser.socket.emit('new-connection', currentRandomString);
-    }
+    userPipeline.removeUser(user);
   });
 });
 
-http.listen(process.env.PORT, function(){
+http.listen(3000, function(){
   console.log('listening on *:3000');
 });
+
+//http.listen(process.env.PORT, function(){
+  //console.log('listening on *:3000');
+//});
