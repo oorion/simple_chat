@@ -19,15 +19,39 @@ UserPipeline.prototype.length = function() {
 };
 
 UserPipeline.prototype.selectRandomUser = function(user) {
-  //select a random user
-  var waitingUsersToSample = _.reject(this.waitingUsers, function(testUser) {
+  var randomUser;
+  while(randomUser === undefined) {
+    var waitingUsersToSelectFrom = this.removeUsersWithoutMutating(user);
+    var randomUserToTest = waitingUsersToSelectFrom[_.random(0, waitingUsersToSelectFrom.length - 1)];
+    if (!this.userIsConnected(randomUserToTest)) {
+      randomUser = randomUserToTest;
+    }
+  }
+  return randomUser;
+};
+
+UserPipeline.prototype.userIsConnected = function(user) {
+  var connectedUsers = _.select(this.waitingUsers, function(testUser) {
     return user.randomString === testUser.randomString;
   });
-  var randomUser = waitingUsersToSample.splice(_.random(0, waitingUsersToSample.length - 1), 1)[0];
+  return (connectedUsers.length > 1);
+};
 
-  //update the randomly selected user's random string
-  randomUser.randomString = user.randomString;
-  return randomUser;
+UserPipeline.prototype.removeUsersWithoutMutating = function(user) {
+  return _.reject(this.waitingUsers, function(testUser) {
+    return user.randomString === testUser.randomString;
+  });
+};
+
+UserPipeline.prototype.unconnectedUsers = function() {
+  var output = [];
+  var self = this;
+  _.each(this.waitingUsers, function(user) {
+    if (!self.userIsConnected(user)) {
+      output.push(user);
+    }
+  });
+  return output;
 };
 
 module.exports = UserPipeline;

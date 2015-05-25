@@ -14,16 +14,23 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
   var user = new User("", socket);
   userPipeline.addUser(user);
+  console.log('outside waiting: ' + userPipeline.length());
 
   socket.on('waiting', function(randomString) {
-    user.randomString = randomString;
+    if (user.randomString === "") {
+      user.randomString = randomString;
+    }
 
-    if (userPipeline.length() > 1) {
+    console.log('inside waiting: ' + userPipeline.length());
+
+    if (userPipeline.unconnectedUsers().length > 1 || (userPipeline.unconnectedUsers().length  === 1 && userPipeline.userIsConnected(user))) {
       var randomUser = userPipeline.selectRandomUser(user);
+      user.randomString = randomString;
+      randomUser.randomString = randomString;
 
       //emit new-connection to both users
       user.socket.emit('new-connection', user.randomString);
-      randomUser.socket.emit('new-connection', user.randomString);
+      randomUser.socket.emit('new-connection', randomUser.randomString);
     }
 
     console.log('waitingUsers channels: ');

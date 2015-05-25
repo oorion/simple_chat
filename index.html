@@ -20,6 +20,8 @@
           autoRequestMedia: true
         });
 
+        console.log(webrtc);
+
         webrtc.on('readyToCall', function () {
           webrtc.joinRoom(name);
         });
