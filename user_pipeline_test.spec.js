@@ -105,4 +105,20 @@ describe('UserPipeline', function() {
 
     expect(userPipeline.unconnectedUsers().length).toEqual(2);
   });
+
+  it('can return a list of all available users', function() {
+    var userPipeline = new UserPipeline;
+
+    var user1 = new User('a', '1');
+    var user2 = new User('b', '2');
+    var user3 = new User('b', '3');
+    var user4 = new User('', '4');
+    userPipeline.addUser(user1);
+    userPipeline.addUser(user2);
+    userPipeline.addUser(user3);
+    userPipeline.addUser(user4);
+
+    expect(userPipeline.availableUsers().length).toEqual(1);
+    expect(userPipeline.availableUsers()[0]).toEqual(user1);
+  });
 });

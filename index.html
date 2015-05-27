@@ -1,55 +1,16 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>Simple Chat</title>
   </head>
   <body>
     <video id="local-video"></video>
     <div id="remote-videos"></div>
-
     <button class="random">Random</button>
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="//simplewebrtc.com/latest.js"></script>
-    <script>
-      function createNewChannelFor(name) {
-        var webrtc = new SimpleWebRTC({
-          localVideoEl: 'local-video',
-          remoteVideosEl: 'remote-videos',
-          autoRequestMedia: true
-        });
-
-        console.log(webrtc);
-
-        webrtc.on('readyToCall', function () {
-          webrtc.joinRoom(name);
-        });
-      }
-
-      function randomString(length, chars) {
-        var result = '';
-        for (var i = length; i > 0; --i) {
-          result += chars[Math.round(Math.random() * (chars.length - 1))];
-        }
-        return result;
-      }
-
-      function generateRandomString() {
-        return randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
-      }
-
-      var socket = io();
-
-      $('.random').on('click', function () {
-        $('#remote-videos').html('');
-        socket.emit('waiting', generateRandomString());
-      });
-
-      socket.on('new-connection', function(channel) {
-        currentChannel = channel;
-        createNewChannelFor(channel);
-      });
-    </script>
+    <script src="/client.js"></script>
   </body>
 </html>
