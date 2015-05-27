@@ -1,16 +1,22 @@
 $(document).ready(function() {
   var channel;
+  var webrtc;
   function createNewChannelFor(name) {
-    var webrtc = new SimpleWebRTC({
-      localVideoEl: 'local-video',
-      remoteVideosEl: 'remote-videos',
-      autoRequestMedia: true
-    });
+    if (webrtc === undefined) {
+      webrtc = new SimpleWebRTC({
+        localVideoEl: 'local-video',
+        remoteVideosEl: 'remote-videos',
+        autoRequestMedia: true
+      });
 
-    webrtc.on('readyToCall', function () {
-      webrtc.joinRoom(name);
-      channel = name;
-    });
+      webrtc.on('readyToCall', function () {
+        webrtc.joinRoom(name);
+        channel = name;
+      });
+    } else {
+        webrtc.joinRoom(name);
+        channel = name;
+    }
   }
 
   function randomString(length, chars) {
@@ -28,13 +34,13 @@ $(document).ready(function() {
   var socket = io();
 
   $('.random').on('click', function () {
-    $('#remote-videos').html('');
-    //webrtc.leaveRoom(channel);
+    if (webrtc != undefined) {
+      webrtc.leaveRoom(channel);
+    }
     socket.emit('waiting', generateRandomString());
   });
 
-  socket.on('new-connection', function(channel) {
-    console.log('new channel: ' + channel);
-    createNewChannelFor(channel);
+  socket.on('new-connection', function(name) {
+    createNewChannelFor(name);
   });
 });
