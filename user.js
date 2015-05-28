@@ -1,6 +1,7 @@
-var User = function(randomString, socket) {
-  this.randomString = randomString;
+var User = function(socket) {
   this.socket = socket;
+  this.randomString = "";
+  this.ipAddress = "";
 }
 
 module.exports = User;

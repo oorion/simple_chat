@@ -1,7 +1,7 @@
-var webrtc;
 $(document).ready(function() {
   var channel;
-  //var webrtc;
+  var webrtc;
+
   function createNewChannelFor(name) {
     if (webrtc === undefined) {
       webrtc = new SimpleWebRTC({
@@ -49,7 +49,7 @@ $(document).ready(function() {
     if (webrtc != undefined) {
       webrtc.leaveRoom(channel);
     }
-    socket.emit('waiting', generateRandomString());
+    socket.emit('waiting', [generateRandomString(), myip]);
     window.setTimeout(tellUserIfNoAvailableUsers, 2000);
   });
 
