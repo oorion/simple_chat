@@ -1,6 +1,7 @@
+var webrtc;
 $(document).ready(function() {
   var channel;
-  var webrtc;
+  //var webrtc;
   function createNewChannelFor(name) {
     if (webrtc === undefined) {
       webrtc = new SimpleWebRTC({
@@ -13,12 +14,9 @@ $(document).ready(function() {
         webrtc.joinRoom(name);
         channel = name;
       });
-
-      //$('video').css({'height': '100px'});
     } else {
       webrtc.joinRoom(name);
       channel = name;
-      //$('#remote-videos').css({'height': '100px'});
     }
   }
 
@@ -34,6 +32,16 @@ $(document).ready(function() {
     return randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
   }
 
+  function noAvailableUsers() {
+    return (webrtc === undefined || webrtc.roomName === undefined);
+  }
+
+  function tellUserIfNoAvailableUsers() {
+    if (noAvailableUsers()) {
+      $('#remote-videos').html('There are no available users connected');
+    }
+  }
+
   var socket = io();
 
   $('.random').on('click', function () {
@@ -42,9 +50,11 @@ $(document).ready(function() {
       webrtc.leaveRoom(channel);
     }
     socket.emit('waiting', generateRandomString());
+    window.setTimeout(tellUserIfNoAvailableUsers, 2000);
   });
 
   socket.on('new-connection', function(name) {
+    $('#remote-videos').html('');
     createNewChannelFor(name);
   });
 });
