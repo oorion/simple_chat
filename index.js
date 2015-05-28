@@ -11,8 +11,12 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/client.js', function(req, res){
-  res.sendFile(__dirname + '/client.js');
+app.get('/js/client.js', function(req, res){
+  res.sendFile(__dirname + '/js/client.js');
+});
+
+app.get('/css/styles.css', function(req, res){
+  res.sendFile(__dirname + '/css/styles.css');
 });
 
 io.on('connection', function(socket){

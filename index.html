@@ -2,15 +2,26 @@
 <html>
   <head>
     <title>Simple Chat</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
   </head>
   <body>
-    <video id="local-video"></video>
-    <div id="remote-videos"></div>
-    <button class="random">Random</button>
+    <h1>Welcome to Simple Chat</h1>
+    <h2>A chat roulette clone</h2><br/>
+    <div class="center">
+      <button class="random btn btn-primary">Connect</button>
+    </div>
+    <div class="row">
+      <div class="col-md-offset-1 col-md-4">
+        <video id="local-video"></video>
+      </div>
+      <div id="remote-videos" class="col-md-4 col-md-offset-2"></div>
+    </div>
 
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="//simplewebrtc.com/latest.js"></script>
-    <script src="/client.js"></script>
+    <script src="/js/client.js"></script>
   </body>
 </html>

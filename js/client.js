@@ -13,9 +13,12 @@ $(document).ready(function() {
         webrtc.joinRoom(name);
         channel = name;
       });
+
+      //$('video').css({'height': '100px'});
     } else {
-        webrtc.joinRoom(name);
-        channel = name;
+      webrtc.joinRoom(name);
+      channel = name;
+      //$('#remote-videos').css({'height': '100px'});
     }
   }
 
@@ -34,6 +37,7 @@ $(document).ready(function() {
   var socket = io();
 
   $('.random').on('click', function () {
+    $('.random').html('Next');
     if (webrtc != undefined) {
       webrtc.leaveRoom(channel);
     }
