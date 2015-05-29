@@ -23,21 +23,22 @@ io.on('connection', function(socket){
   var user = new User("", socket);
   userPipeline.addUser(user);
 
-  socket.on('waiting', function(randomString) {
+  socket.on('waiting', function(data) {
+    var randomString = data[0];
+    var zipcode = data[1];
     if (user.randomString === "") {
       user.randomString = randomString;
+      user.zipcode = zipcode;
     }
 
     if (userPipeline.usersAvailable(user)) {
       var randomUser = userPipeline.selectRandomUser(user);
       user.randomString = randomString;
+      user.zipcode = zipcode;
       randomUser.randomString = randomString;
 
       user.socket.emit('new-connection', randomString);
       randomUser.socket.emit('new-connection', randomString);
-
-      console.log('user.socket.handshake.address: ' + user.socket.handshake.address);
-      console.log('user.socket.client.conn.remoteAddress: ' + user.socket.client.conn.remoteAddress);
     }
   });
 
@@ -46,11 +47,11 @@ io.on('connection', function(socket){
   });
 });
 
-//http.listen(3000, function(){
-  //console.log('listening on *:3000');
-//});
-
-
-http.listen(process.env.PORT, function(){
+http.listen(3000, function(){
   console.log('listening on *:3000');
 });
+
+
+//http.listen(process.env.PORT, function(){
+  //console.log('listening on *:3000');
+//});

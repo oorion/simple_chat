@@ -1,7 +1,7 @@
-var webrtc;
 $(document).ready(function() {
   var channel;
-  //var webrtc;
+  var webrtc;
+
   function createNewChannelFor(name) {
     if (webrtc === undefined) {
       webrtc = new SimpleWebRTC({
@@ -42,6 +42,23 @@ $(document).ready(function() {
     }
   }
 
+  function grabZipcode() {
+    return $('.zipcode').val();
+  }
+
+  function checkForZipcode() {
+    var $zipcode = $('.zipcode');
+    $zipcode.keyup(function() {
+      if ($zipcode.val().length === 5 && !isNaN($zipcode.val())) {
+        $('.random').removeAttr('disabled');
+      } else {
+        $('.random').attr('disabled', 'disabled');
+      }
+    });
+  }
+
+  checkForZipcode();
+
   var socket = io();
 
   $('.random').on('click', function () {
@@ -49,7 +66,7 @@ $(document).ready(function() {
     if (webrtc != undefined) {
       webrtc.leaveRoom(channel);
     }
-    socket.emit('waiting', generateRandomString());
+    socket.emit('waiting', [generateRandomString(), grabZipcode()]);
     window.setTimeout(tellUserIfNoAvailableUsers, 2000);
   });
 
