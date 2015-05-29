@@ -39,9 +39,6 @@ io.on('connection', function(socket){
 
       user.socket.emit('new-connection', randomString);
       randomUser.socket.emit('new-connection', randomString);
-
-      console.log(user.zipcode);
-      console.log(randomUser.zipcode);
     }
   });
 
