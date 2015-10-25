@@ -22,21 +22,16 @@ app.get('/css/styles.css', function(req, res){
 io.on('connection', function(socket){
   var user = new User("", socket);
   userPipeline.addUser(user);
+  //socket.emit('connect', 'you connected');
 
   socket.on('waiting', function(data) {
     var randomString = data[0];
-    var zipcode = data[1];
-    if (user.randomString === "") {
-      user.randomString = randomString;
-      user.zipcode = zipcode;
-    }
+    user.zipcode = data[1];
+    user.randomString = randomString;
 
     if (userPipeline.usersAvailable(user)) {
       var randomUser = userPipeline.selectRandomUser(user);
-      user.randomString = randomString;
-      user.zipcode = zipcode;
       randomUser.randomString = randomString;
-
       user.socket.emit('new-connection', randomString);
       randomUser.socket.emit('new-connection', randomString);
     }
@@ -51,6 +46,6 @@ io.on('connection', function(socket){
   //console.log('listening on port ' + process.env.PORT);
 //});
 
-http.listen(3000, function(){
-  console.log('listening on port 3000');
+http.listen(5000, function(){
+  console.log('listening on port 5000');
 });

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "spec": "jasmine-node spec/"
+    "test": "jasmine-node spec/"
   },
   "author": "Orion Osborn",
   "license": "MIT",
