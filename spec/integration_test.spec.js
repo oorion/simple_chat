@@ -6,13 +6,22 @@ var options ={
   'force new connection': true
 };
 
+function checkSocket(client) {
+  client.on('connect_error', function(data) {
+    console.log("\033[31mCONNECTION ERROR! Make sure the server is running\033[0m");
+    console.log(data);
+  });
+}
+
 describe("Chat Server",function(){
   it('should return the same randomString to two users if both send waiting', function(done){
     var client1 = io.connect(socketURL, options);
     var zipCode = '12345';
+    checkSocket(client1);
 
     // var oldEmit  = client1.emit;
     // client1.emit = function (type) {
+    //   console.log("EVENT: " + type);
     //   return oldEmit.apply(this, arguments);
     // }
 
