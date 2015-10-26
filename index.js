@@ -2,36 +2,7 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var _ = require('underscore');
-var UserPipeline = require('./user_pipeline');
-var User = require('./user');
-var util = require("util");
-
-var SimpleChatServer = function() {
-  this.userPipeline = new UserPipeline;
-}
-
-SimpleChatServer.prototype.createUser = function(connectCallback) {
-  var user = new User("", connectCallback);
-  this.userPipeline.addUser(user);
-  return user;
-}
-
-SimpleChatServer.prototype.userIsReady = function(user, attributes) {
-  user.zipcode      = attributes.zipcode;
-  user.randomString = attributes.channelId;
-
-  if (this.userPipeline.usersAvailable(user)) {
-    var randomUser = this.userPipeline.selectRandomUser(user);
-    randomUser.randomString = attributes.channelId;
-    user.connectCallback(attributes.channelId);
-    randomUser.connectCallback(attributes.channelId);
-  }
-}
-
-SimpleChatServer.prototype.destroyUser = function(user) {
-  this.userPipeline.removeUser(user);
-}
-
+var SimpleChatServer = require("./simple_chat_server");
 
 
 app.get('/', function(req, res){
