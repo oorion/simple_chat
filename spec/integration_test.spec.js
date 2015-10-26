@@ -30,8 +30,6 @@ describe("Chat Server",function(){
       var client2 = io.connect(socketURL, options);
 
       client2.on('connect', function(data){
-        client2.emit('waiting', ['a2', zipCode]);
-
         var dataSeen = [];
 
         function checkData(index, data) {
@@ -51,6 +49,8 @@ describe("Chat Server",function(){
         client2.on('new-connection', function(data){
           checkData(1, data);
         });
+
+        client2.emit('waiting', ['a2', zipCode]);
       });
     });
   });
