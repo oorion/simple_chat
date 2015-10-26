@@ -27,4 +27,8 @@ SimpleChatServer.prototype.destroyUser = function(user) {
   this.userPipeline.removeUser(user);
 }
 
+SimpleChatServer.prototype.numberOfUsers = function() {
+  return this.userPipeline.length();
+}
+
 module.exports = SimpleChatServer;
