@@ -23,8 +23,13 @@ io.on('connection', function(socket){
     socket.emit('new-connection', channelId);
   });
 
+  socket.on('assign-geolocation', function(geolocation) {
+    user.lat = geolocation[0];
+    user.lon = geolocation[1];
+  });
+
   socket.on('waiting', function(data) {
-    server.userIsReady(user, {channelId: data[0], zipcode: data[1]})
+    server.userIsReady(user, {channelId: data})
   });
 
   socket.on('disconnect', function(){

@@ -42,22 +42,16 @@ $(document).ready(function() {
     }
   }
 
-  function grabZipcode() {
-    return $('.zipcode').val();
-  }
-
-  function checkForZipcode() {
-    var $zipcode = $('.zipcode');
-    $zipcode.keyup(function() {
-      if ($zipcode.val().length === 5 && !isNaN($zipcode.val())) {
-        $('.random').removeAttr('disabled');
-      } else {
-        $('.random').attr('disabled', 'disabled');
-      }
-    });
-  }
-
-  checkForZipcode();
+  // function checkForZipcode() {
+  //   var $zipcode = $('.zipcode');
+  //   $zipcode.keyup(function() {
+  //     if ($zipcode.val().length === 5 && !isNaN($zipcode.val())) {
+  //       $('.random').removeAttr('disabled');
+  //     } else {
+  //       $('.random').attr('disabled', 'disabled');
+  //     }
+  //   });
+  // }
 
   var socket = io();
 
@@ -66,7 +60,7 @@ $(document).ready(function() {
     if (webrtc != undefined) {
       webrtc.leaveRoom(channel);
     }
-    socket.emit('waiting', [generateRandomString(), grabZipcode()]);
+    socket.emit('waiting', generateRandomString());
     window.setTimeout(tellUserIfNoAvailableUsers, 4000);
   });
 
@@ -74,4 +68,14 @@ $(document).ready(function() {
     $('#remote-videos').html('');
     createNewChannelFor(name);
   });
+
+  var lat;
+  var lon;
+  navigator.geolocation.getCurrentPosition(GetLocation);
+  function GetLocation(location) {
+    lat = location.coords.latitude;
+    lon = location.coords.longitude;
+
+    socket.emit("assign-geolocation", [lat, lon]);
+  }
 });
