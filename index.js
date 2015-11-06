@@ -2,10 +2,8 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var _ = require('underscore');
-var UserPipeline = require('./user_pipeline');
-var User = require('./user');
+var SimpleChatServer = require("./simple_chat_server");
 
-var userPipeline = new UserPipeline;
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
@@ -19,39 +17,25 @@ app.get('/css/styles.css', function(req, res){
   res.sendFile(__dirname + '/css/styles.css');
 });
 
+var server = new SimpleChatServer();
 io.on('connection', function(socket){
-  var user = new User("", socket);
-  userPipeline.addUser(user);
+  var user = server.createUser(function(channelId) {
+    socket.emit('new-connection', channelId);
+  });
 
   socket.on('waiting', function(data) {
-    var randomString = data[0];
-    var zipcode = data[1];
-    if (user.randomString === "") {
-      user.randomString = randomString;
-      user.zipcode = zipcode;
-    }
-
-    if (userPipeline.usersAvailable(user)) {
-      var randomUser = userPipeline.selectRandomUser(user);
-      user.randomString = randomString;
-      user.zipcode = zipcode;
-      randomUser.randomString = randomString;
-
-      user.socket.emit('new-connection', randomString);
-      randomUser.socket.emit('new-connection', randomString);
-    }
+    server.userIsReady(user, {channelId: data[0], zipcode: data[1]})
   });
 
   socket.on('disconnect', function(){
-    userPipeline.removeUser(user);
+    server.destroyUser(user);
   });
 });
 
-//http.listen(3000, function(){
-  //console.log('listening on *:3000');
+//http.listen(process.env.PORT, function(){
+  //console.log('listening on port ' + process.env.PORT);
 //});
 
-
-http.listen(process.env.PORT, function(){
-  console.log('listening on *:3000');
+http.listen(5000, function(){
+  console.log('listening on port 5000');
 });

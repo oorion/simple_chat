@@ -67,7 +67,7 @@ $(document).ready(function() {
       webrtc.leaveRoom(channel);
     }
     socket.emit('waiting', [generateRandomString(), grabZipcode()]);
-    window.setTimeout(tellUserIfNoAvailableUsers, 2000);
+    window.setTimeout(tellUserIfNoAvailableUsers, 4000);
   });
 
   socket.on('new-connection', function(name) {

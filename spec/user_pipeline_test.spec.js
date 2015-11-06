@@ -1,5 +1,5 @@
-var UserPipeline = require('./user_pipeline');
-var User = require('./user');
+var UserPipeline = require('../user_pipeline');
+var User = require('../user');
 
 describe('UserPipeline', function() {
   it('has an array of users', function() {
