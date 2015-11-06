@@ -12,7 +12,6 @@ SimpleChatServer.prototype.createUser = function(connectCallback) {
 }
 
 SimpleChatServer.prototype.userIsReady = function(user, attributes) {
-  user.zipcode      = attributes.zipcode;
   user.randomString = attributes.channelId;
 
   if (this.userPipeline.usersAvailable(user)) {
