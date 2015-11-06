@@ -71,11 +71,16 @@ $(document).ready(function() {
 
   var lat;
   var lon;
+
   navigator.geolocation.getCurrentPosition(GetLocation);
   function GetLocation(location) {
     lat = location.coords.latitude;
     lon = location.coords.longitude;
-
     socket.emit("assign-geolocation", [lat, lon]);
   }
+
+  socket.on("geolocation-set", function() {
+    $('.random').removeAttr('disabled');
+  });
+
 });
