@@ -25,7 +25,7 @@ io.on('connection', function(socket){
 
   socket.on('assign-geolocation', function(geolocation) {
     user.assignGeolocation(geolocation);
-    socket.emit("geolocation-set");
+    socket.emit("geolocation-set", [user.lat, user.lon]);
   });
 
   socket.on('waiting', function(data) {

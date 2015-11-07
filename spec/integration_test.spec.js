@@ -47,4 +47,24 @@ describe("Chat Server",function(){
       });
     });
   });
+
+  it('assign user geolocation', function(done){
+    geolocation = [40.0274, -105.2519]
+    var client1 = io.connect(socketURL, options);
+    checkSocket(client1);
+
+    client1.on('connect', function(data){
+      function checkData(data) {
+        expect(data).toEqual(geolocation);
+        client1.disconnect();
+        done();
+      }
+
+      client1.emit('assign-geolocation', geolocation);
+
+      client1.on('geolocation-set', function(data){
+        checkData(data);
+      })
+    });
+  });
 });
