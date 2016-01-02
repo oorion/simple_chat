@@ -42,17 +42,6 @@ $(document).ready(function() {
     }
   }
 
-  // function checkForZipcode() {
-  //   var $zipcode = $('.zipcode');
-  //   $zipcode.keyup(function() {
-  //     if ($zipcode.val().length === 5 && !isNaN($zipcode.val())) {
-  //       $('.random').removeAttr('disabled');
-  //     } else {
-  //       $('.random').attr('disabled', 'disabled');
-  //     }
-  //   });
-  // }
-
   var socket = io();
 
   $('.random').on('click', function () {

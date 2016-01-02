@@ -31,6 +31,9 @@ UserPipeline.prototype = {
     return randomUser;
   },
 
+  selectClosestUser: function(user) {
+  },
+
   userIsConnected: function(user) {
     var connectedUsers = _.select(this.waitingUsers, function(testUser) {
       return user.randomString === testUser.randomString;
