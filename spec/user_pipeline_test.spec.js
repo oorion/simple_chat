@@ -121,4 +121,27 @@ describe('UserPipeline', function() {
     expect(userPipeline.availableUsers().length).toEqual(1);
     expect(userPipeline.availableUsers()[0]).toEqual(user1);
   });
+
+  it('can select the closest user', function() {
+    var userPipeline = new UserPipeline;
+    var boulderGeolocation      = [40.0274, -105.2519];
+    var albuquerqueGeolocation  = [35.1107, -106.6100];
+    var denverGeolocation       = [39.7392, -104.9903];
+    var user1 = createUserAndAssignGeolocation('a', boulderGeolocation)
+    var user2 = createUserAndAssignGeolocation('b', albuquerqueGeolocation)
+    var user3 = createUserAndAssignGeolocation('c', denverGeolocation)
+    userPipeline.addUser(user1);
+    userPipeline.addUser(user2);
+    userPipeline.addUser(user3);
+
+    var selectedUser = userPipeline.selectClosestUser(user1);
+
+    expect(selectedUser).toEqual(user3);
+  });
 });
+
+function createUserAndAssignGeolocation(randomString, geolocation) {
+    var user = new User(randomString, function() {});
+    user.assignGeolocation(geolocation);
+    return user;
+}

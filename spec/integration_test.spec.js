@@ -16,17 +16,10 @@ function checkSocket(client) {
 describe("Chat Server",function(){
   it('should return the same randomString to two users if both send waiting', function(done){
     var client1 = io.connect(socketURL, options);
-    var zipCode = '12345';
     checkSocket(client1);
 
-    // var oldEmit  = client1.emit;
-    // client1.emit = function (type) {
-    //   console.log("EVENT: " + type);
-    //   return oldEmit.apply(this, arguments);
-    // }
-
     client1.on('connect', function(data){
-      client1.emit('waiting', ['a1', zipCode]);
+      client1.emit('waiting', 'a1');
       var client2 = io.connect(socketURL, options);
 
       client2.on('connect', function(data){
@@ -50,7 +43,7 @@ describe("Chat Server",function(){
           checkData(1, data);
         });
 
-        client2.emit('waiting', ['a2', zipCode]);
+        client2.emit('waiting', 'a2');
       });
     });
   });
