@@ -48,14 +48,12 @@ UserPipeline.prototype = {
   },
 
   usersAreClose: function(user1, user2) {
-    function toRadians(val) {
-      return Math.PI * val / 180;
-    };
+    var minimumDistanceInKilometers = 40000;
+
     var lat1 = user1.lat
     var lon1 = user1.lon
     var lat2 = user2.lat
     var lon2 = user2.lon
-
     var R = 6371000; // metres
     var φ1 = this.toRadians(lat1);
     var φ2 = this.toRadians(lat2);
@@ -66,7 +64,7 @@ UserPipeline.prototype = {
             Math.sin(Δλ/2) * Math.sin(Δλ/2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     var d = R * c;
-    return d < 40000;
+    return d < minimumDistanceInKilometers;
   },
 
   userIsConnected: function(user) {
