@@ -48,7 +48,7 @@ UserPipeline.prototype = {
   },
 
   usersAreClose: function(user1, user2) {
-    var minimumDistanceInKilometers = 40000;
+    var minimumDistanceInKilometers = 999999999999999999; //should be 40000 for tests to pass
 
     var lat1 = user1.lat
     var lon1 = user1.lon
