@@ -32,6 +32,41 @@ UserPipeline.prototype = {
   },
 
   selectClosestUser: function(user) {
+    var closestUser;
+    while(closestUser === undefined) {
+      var waitingUsersToSelectFrom = this.removeUsersWithoutMutating(user);
+      var userToTest = waitingUsersToSelectFrom[_.random(0, waitingUsersToSelectFrom.length - 1)];
+      if (!this.userIsConnected(userToTest) && this.usersAreClose(user, userToTest)) {
+        closestUser = userToTest;
+      }
+    }
+    return closestUser;
+  },
+
+  toRadians: function(val) {
+    return Math.PI * val / 180;
+  },
+
+  usersAreClose: function(user1, user2) {
+    function toRadians(val) {
+      return Math.PI * val / 180;
+    };
+    var lat1 = user1.lat
+    var lon1 = user1.lon
+    var lat2 = user2.lat
+    var lon2 = user2.lon
+
+    var R = 6371000; // metres
+    var φ1 = this.toRadians(lat1);
+    var φ2 = this.toRadians(lat2);
+    var Δφ = this.toRadians(lat2-lat1);
+    var Δλ = this.toRadians(lon2-lon1);
+    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+    return d < 40000;
   },
 
   userIsConnected: function(user) {
