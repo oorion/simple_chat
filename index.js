@@ -37,10 +37,10 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(process.env.PORT, function(){
-  console.log('listening on port ' + process.env.PORT);
-});
-
-//http.listen(5000, function(){
-  //console.log('listening on port 5000');
+//http.listen(process.env.PORT, function(){
+  //console.log('listening on port ' + process.env.PORT);
 //});
+
+http.listen(3000, function(){
+  console.log('listening on port 3000');
+});
